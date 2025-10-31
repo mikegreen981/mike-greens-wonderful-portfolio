@@ -1,178 +1,102 @@
+<!DOCTYPE html>
 <html>
 
-	<head>
-		<link href="style.css" rel="stylesheet">
-		<title>Mike Green - Portfolio</title>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-        <link rel="preconnect" href="https://fonts.googleapis.com">
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-        <link href="https://fonts.googleapis.com/css2?family=Imprima&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            /* --- Minigame styles (embedded so it works out of the box) --- */
-            /* The "Khaby Lame Mechanism Minigame" block styles */
-            #minigame {
-                margin: 24px auto;
-                max-width: 900px;
-                display: flex;
-                gap: 24px;
-                align-items: flex-start;
-                padding: 18px;
-                border-radius: 10px;
-                background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
-                box-shadow: 0 6px 18px rgba(0,0,0,0.06);
-            }
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="style.css" rel="stylesheet">
+    <title>Mike Green - Portfolio</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Imprima&family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Minigame styles (embedded so it works out of the box) --- */
+        #minigame {
+            margin: 24px auto;
+            max-width: 900px;
+            display: flex;
+            gap: 24px;
+            align-items: flex-start;
+            padding: 18px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+        }
 
-            #mechanism-area {
-                width: 360px;
-                height: 360px;
-                display: grid;
-                place-items: center;
-                background: #fff;
-                border-radius: 8px;
-                box-shadow: 0 6px 12px rgba(0,0,0,0.06);
-                position: relative;
-                overflow: hidden;
-            }
+        #mechanism-area {
+            width: 360px;
+            height: 360px;
+            display: grid;
+            place-items: center;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.06);
+            position: relative;
+            overflow: hidden;
+        }
 
-            /* Decorative floor under mechanism */
-            #mechanism-area::after{
-                content: "";
-                position: absolute;
-                bottom: 0;
-                left: 0;
-                right: 0;
-                height: 36px;
-                background: linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
-            }
+        #mechanism-area::after{
+            content: "";
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 36px;
+            background: linear-gradient(90deg, rgba(0,0,0,0.03), rgba(0,0,0,0.01));
+        }
 
-            .mechanism {
-                width: 260px;
-                height: 260px;
-                display: block;
-                cursor: pointer;
-                transition: transform 700ms cubic-bezier(.22,.9,.32,1);
-                transform-origin: 50% 50%;
-                user-select: none;
-            }
+        .mechanism-img {
+            width: 260px;
+            height: 260px;
+            object-fit: contain;
+            cursor: pointer;
+            transition: transform 700ms cubic-bezier(.22,.9,.32,1);
+            transform-origin: 50% 50%;
+            user-select: none;
+        }
 
-            .mechanism.spin {
-                /* class applied when spinning for visual emphasis — rotation handled in JS for variable amounts */
-                filter: drop-shadow(0 8px 12px rgba(0,0,0,0.08));
-            }
+        .mechanism-img.spin {
+            filter: drop-shadow(0 8px 12px rgba(0,0,0,0.08));
+        }
 
-            #minigame-info {
-                flex: 1;
-                min-width: 260px;
-            }
+        #minigame-info { flex:1; min-width:260px }
+        #minigame-info h3 { margin:0 0 6px 0; font-size:1.15rem }
+        #minigame-info p { margin:6px 0 12px 0; color:#333; line-height:1.35 }
+        .controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap }
+        .btn { border:0; padding:8px 12px; background:#0a66c2; color:white; border-radius:6px; cursor:pointer; font-weight:600; font-family:inherit }
+        .btn.secondary { background:#efefef; color:#222 }
+        .stats { margin-top:12px; font-size:0.95rem }
+        .log { margin-top:12px; max-height:120px; overflow:auto; background:#fff; padding:8px; border-radius:6px; border:1px solid rgba(0,0,0,0.04); font-family:monospace; font-size:0.9rem }
 
-            #minigame-info h3 {
-                margin: 0 0 6px 0;
-                font-size: 1.15rem;
-            }
+        @media (max-width:760px){ #minigame{flex-direction:column; align-items:center} #mechanism-area{width:320px;height:320px} }
+    </style>
+</head>
 
-            #minigame-info p {
-                margin: 6px 0 12px 0;
-                color: #333;
-                line-height: 1.35;
-            }
+<body>
+    <h1 class="banner">Michael Green</h1>
+    <header id="header">
+        <section id="header-main">
+            <article id="header-blurb">
+                <h2>Part-Time Software Engineer</h2>
+                <p>My goal is to take over the world one conference talk at a time.</p>
+            </article>
+            <article id="header-contact">
+                <h2>Contact me.</h2>
+                <p><i class="fa fa-envelope" aria-hidden="true"></i> <a href="mailto:mikegreen@gmail.com">mikegreen@gmail.com</a></p>
+                <p><i class="fab fa-github" aria-hidden="true"></i> <a href="https://github.com/mikegreen981" target="_blank">username</a></p>
+                <p><i class="fab fa-youtube" aria-hidden="true"></i> <a href="https://www.youtube.com/watch?v=2vExTdE6GqA" target="_blank">youtube</a></p>
+            </article>
+        </section>
+    </header>
 
-            .controls {
-                display: flex;
-                gap: 8px;
-                align-items: center;
-                flex-wrap: wrap;
-            }
-
-            .btn {
-                border: 0;
-                padding: 8px 12px;
-                background: #0a66c2;
-                color: white;
-                border-radius: 6px;
-                cursor: pointer;
-                font-weight: 600;
-                font-family: inherit;
-            }
-
-            .btn.secondary {
-                background: #efefef;
-                color: #222;
-            }
-
-            .stats {
-                margin-top: 12px;
-                font-size: 0.95rem;
-            }
-
-            .log {
-                margin-top: 12px;
-                max-height: 120px;
-                overflow: auto;
-                background: #fff;
-                padding: 8px;
-                border-radius: 6px;
-                border: 1px solid rgba(0,0,0,0.04);
-                font-family: monospace;
-                font-size: 0.9rem;
-            }
-
-            /* small responsive adjustments */
-            @media (max-width: 760px) {
-                #minigame {
-                    flex-direction: column;
-                    align-items: center;
-                }
-                #mechanism-area {
-                    width: 320px;
-                    height: 320px;
-                }
-            }
-        </style>
-    </head>
-
-	<body>
-		
-            
-		<h1 class="banner">Michael Green</h1>
-        <header id="header">	
-            <section id="header-main">
-                <article id="header-blurb">
-                <h2>
-                Part-Time Software Engineer
-                </h2>
-                    <p>
-                        My goal is to take over the world one conference talk at a time.                    </p>
-                </article>
-                <article id="header-contact">
-                    <h2>Contact me.</h2>
-                        <p>
-                            <i class="fa fa-envelope" aria-hidden="true"></i>
-                            <a href="mailto:mikegreen@gmail.com">mikegreen@gmail.com</a>
-                        </p>
-                        <p>
-                            <i class="fab fa-github" aria-hidden="true"></i>
-                            <a href="https://github.com/mikegreen981" target="_blank">username</a>
-                        </p>
-						<p>
-                            <i class="fab fa-youtube" aria-hidden="true"></i>
-                            <a href="https://www.youtube.com/watch?v=2vExTdE6GqA" target="_blank">youtube</a>
-                        </p>
-                </article>
-            </section>
-		</header>
-
-        <h2 class="banner">My Projects</h2>
-        <main>
+    <h2 class="banner">My Projects</h2>
+    <main>
         <article class="project">
-            <img src="images/hq720.jpg">
+            <img src="images/hq720.jpg" alt="project">
             <div>
-                <h3>
-                    Khaby Lame Mechanism
-                </h3>
-                <p>
-                    I have harnessed the power of Agartha and created a khaby lame mechanism which acts as a diddy blud to prevent the calculator from functioning. Khaby lame is a popular figure in th[...]
-                </p>
+                <h3>Khaby Lame Mechanism</h3>
+                <p>I have harnessed the power of Agartha and created a khaby lame mechanism which acts as a diddy blud to prevent the calculator from functioning.</p>
                 <span class="highlight">Technology</span>
                 <ul>
                     <li>Technology 1 (eg. Python)</li>
@@ -180,57 +104,21 @@
                     <li>Technology 3 (eg. Azure Cognitive Services)</li>
                 </ul>
 
-                <a class="link-btn" href="">See it Live</a>
+                <a class="link-btn" href="crypto.html">Live Crypto Prices</a>
                 <a class="link-btn" href="">GitHub Repo</a>
-                
             </div>
         </article>
 
         <!-- Khaby Lame Mechanism Minigame -->
-        <!--
-            START OF KHABY LAME MECHANISM MINIGAME CODE
-            This block implements an interactive minigame: click (or tap) the mechanism to make it "turn" like the
-            Khaby Lame mechanism. Rotation amounts, a score, and a small UI with subtle physics are implemented below.
-            You can find the game markup in the #minigame element, styles in the embedded <style> above, and the
-            behavior in the <script> that follows.
-            END OF KHABY LAME MECHANISM MINIGAME CODE
-        -->
         <section id="minigame" aria-labelledby="minigame-title">
             <div id="mechanism-area" title="Click or tap the mechanism to turn it">
-                <!-- We use an inline SVG so the mechanism visually rotates crisply and does not require external assets -->
-                <svg id="mechanism" class="mechanism" viewBox="0 0 200 200" role="img" aria-label="Khaby Lame mechanism">
-                    <!-- outer ring -->
-                    <defs>
-                        <linearGradient id="g1" x1="0" x2="1">
-                            <stop offset="0" stop-color="#f6f6f9"/>
-                            <stop offset="1" stop-color="#e6eefc"/>
-                        </linearGradient>
-                    </defs>
-                    <circle cx="100" cy="100" r="88" fill="url(#g1)" stroke="#d6dfe9" stroke-width="3"></circle>
-
-                    <!-- spokes / rotating part (group that will rotate) -->
-                    <g id="rotor" transform="translate(100 100)">
-                        <g id="spokes" transform="rotate(0)">
-                            <rect x="-6" y="-80" width="12" height="50" rx="4" fill="#444" opacity="0.95"></rect>
-                            <rect x="-6" y="30" width="12" height="50" rx="4" fill="#333" opacity="0.9"></rect>
-
-                            <rect x="-80" y="-6" width="50" height="12" rx="4" fill="#222" opacity="0.9" transform="rotate(90)"></rect>
-                            <rect x="30" y="-6" width="50" height="12" rx="4" fill="#2a2a2a" opacity="0.9" transform="rotate(90)"></rect>
-
-                            <!-- decorative inner gear -->
-                            <circle cx="0" cy="0" r="26" fill="#fafafa" stroke="#d7d7d7" stroke-width="2"></circle>
-                            <circle cx="0" cy="0" r="12" fill="#333"></circle>
-                        </g>
-                    </g>
-
-                    <!-- small label -->
-                    <text x="100" y="188" font-family="Open Sans, Arial" font-size="10" fill="#666" text-anchor="middle">Khaby Lame Mechanism</text>
-                </svg>
+                <!-- Replace SVG with an image that will rotate like the rotor. Save your provided image to images/khaby.jpg -->
+                <img id="mechanism" class="mechanism-img" src="images/khaby.jpg" alt="Khaby mechanism image" tabindex="0" />
             </div>
 
             <div id="minigame-info">
                 <h3 id="minigame-title">Khaby Lame Mechanism — Minigame</h3>
-                <p>Click or tap the mechanism to make it turn. Each click injects a "force" — if timed well you can chain spins and earn higher multipliers. Click repeatedly to build combos. Watch the log for events.</p>
+                <p>Click or tap the mechanism to make it turn. Each click injects a "force" — if timed well you can chain spins and earn higher multipliers. Click repeatedly to build combos.</p>
 
                 <div class="controls" role="group" aria-label="Minigame controls">
                     <button id="click-btn" class="btn">Click (Turn)</button>
@@ -248,191 +136,96 @@
                 <div class="log" id="log" aria-live="polite"></div>
             </div>
         </section>
+    </main>
 
-        <!-- Add more articles here -->
-       
-		</main>
+    <script>
+    (function(){
+        const mechanism = document.getElementById('mechanism');
+        const spinsEl = document.getElementById('spins');
+        const scoreEl = document.getElementById('score');
+        const comboEl = document.getElementById('combo');
+        const momentumEl = document.getElementById('momentum');
+        const logEl = document.getElementById('log');
+        const clickBtn = document.getElementById('click-btn');
+        const autoBtn = document.getElementById('auto-btn');
+        const resetBtn = document.getElementById('reset-btn');
 
-        <script>
-            // KHABY LAME MECHANISM MINIGAME SCRIPT
-            // Implements an interactive clickable mechanism that rotates when clicked.
-            // Simple physics model:
-            // - Each click applies an impulse (force) to angular velocity (deg/s).
-            // - Angular velocity decays over time due to friction.
-            // - If clicks occur within a "combo window", a combo multiplier increases.
-            // - Score is gained proportional to impulse * current combo multiplier.
-            // This script is self-contained and does not require external libraries.
+        let angle = 0;
+        let angularVelocity = 0;
+        let lastUpdate = performance.now();
+        let spins = 0;
+        let score = 0;
+        let combo = 0;
+        let lastClickTime = 0;
+        const COMBO_WINDOW = 900;
+        let autoMode = false;
+        let autoInterval = null;
 
-            (function() {
-                const mechanism = document.getElementById('mechanism');
-                const rotor = document.getElementById('rotor');
-                const spinsEl = document.getElementById('spins');
-                const scoreEl = document.getElementById('score');
-                const comboEl = document.getElementById('combo');
-                const momentumEl = document.getElementById('momentum');
-                const logEl = document.getElementById('log');
-                const clickBtn = document.getElementById('click-btn');
-                const autoBtn = document.getElementById('auto-btn');
-                const resetBtn = document.getElementById('reset-btn');
+        const FRICTION = 0.995;
+        const MIN_VELOCITY = 0.02;
+        const BASE_IMPULSE = 180;
+        const TIMING_BONUS = 1.4;
+        const PERFECT_WINDOW = 200;
 
-                // Game state
-                let angle = 0;             // current angle in degrees
-                let angularVelocity = 0;   // degrees per second
-                let lastUpdate = performance.now();
-                let spins = 0;
-                let score = 0;
-                let combo = 0;
-                let lastClickTime = 0;
-                const COMBO_WINDOW = 900; // ms within which clicks count toward combo
-                let autoMode = false;
-                let autoInterval = null;
+        function log(msg){
+            const time = new Date().toLocaleTimeString();
+            const entry = document.createElement('div');
+            entry.textContent = `[${time}] ${msg}`;
+            logEl.prepend(entry);
+            while(logEl.childElementCount > 18) logEl.removeChild(logEl.lastChild);
+        }
 
-                // physics parameters (tweakable)
-                const FRICTION = 0.995;      // multiplicative friction per frame (close to 1)
-                const MIN_VELOCITY = 0.02;   // below this we consider it stopped (deg/s)
-                const BASE_IMPULSE = 180;    // base deg/s impulse per click
-                const TIMING_BONUS = 1.4;    // multiplier for perfect timing window
-                const PERFECT_WINDOW = 200;  // ms for "perfect" timing (gives higher combo)
+        function applyImpulse(){
+            let impulse = BASE_IMPULSE;
+            const now = performance.now();
+            const dt = now - lastClickTime;
+            if(lastClickTime && dt <= COMBO_WINDOW){
+                combo = Math.min(9, combo + 1);
+                if(dt <= PERFECT_WINDOW){ impulse *= TIMING_BONUS; log('Perfect timing! Bonus impulse.'); }
+            } else { combo = 1; }
+            lastClickTime = now;
+            const variance = 0.9 + Math.random()*0.2;
+            impulse = impulse * (1 + combo * 0.08) * variance;
+            angularVelocity += impulse;
+            const gained = Math.round(impulse * combo * 0.1);
+            score += gained;
+            spins += 1;
+            scoreEl.textContent = score;
+            spinsEl.textContent = spins;
+            comboEl.textContent = combo;
+            momentumEl.textContent = Math.round(angularVelocity);
+            mechanism.classList.add('spin');
+            setTimeout(()=>mechanism.classList.remove('spin'),700);
+            log(`Clicked: +${gained} pts (impulse ${Math.round(impulse)}) — Combo ${combo}`);
+        }
 
-                // Utility: log event
-                function log(msg) {
-                    const time = new Date().toLocaleTimeString();
-                    const entry = document.createElement('div');
-                    entry.textContent = `[${time}] ${msg}`;
-                    logEl.prepend(entry);
-                    // keep only recent entries
-                    while (logEl.childElementCount > 18) logEl.removeChild(logEl.lastChild);
-                }
+        function tick(now){
+            const dt = Math.min(40, now - lastUpdate)/1000;
+            lastUpdate = now;
+            if(Math.abs(angularVelocity) > MIN_VELOCITY){
+                angle = (angle + angularVelocity * dt) % 360;
+                angularVelocity *= Math.pow(FRICTION, dt*60);
+            } else { angularVelocity = 0; }
+            mechanism.style.transform = `rotate(${angle}deg)`;
+            momentumEl.textContent = Math.round(angularVelocity);
+            requestAnimationFrame(tick);
+        }
 
-                // Apply an impulse to the rotor (called on clicks)
-                function applyImpulse(msSinceLastClick) {
-                    // base impulse modified by combo and timing
-                    let impulse = BASE_IMPULSE;
+        function onMechanismClick(){ applyImpulse(); }
+        function onClickBtn(){ applyImpulse(); }
+        function onAutoToggle(){ autoMode = !autoMode; autoBtn.textContent = `Auto: ${autoMode? 'On':'Off'}`; if(autoMode){ autoInterval = setInterval(()=>applyImpulse(),800); } else { clearInterval(autoInterval); autoInterval = null; }}
+        function onReset(){ angle=0; angularVelocity=0; spins=0; score=0; combo=0; lastClickTime=0; scoreEl.textContent=score; spinsEl.textContent=spins; comboEl.textContent=combo; momentumEl.textContent=0; log('Game reset.'); }
 
-                    // if clicks are close -> grow combo
-                    const now = performance.now();
-                    const dt = now - lastClickTime;
-                    if (lastClickTime && dt <= COMBO_WINDOW) {
-                        combo = Math.min(9, combo + 1);
-                        // perfect timing bonus
-                        if (dt <= PERFECT_WINDOW) {
-                            impulse *= TIMING_BONUS;
-                            log('Perfect timing! Bonus impulse.');
-                        }
-                    } else {
-                        // too slow -> reset combo to 1 (fresh)
-                        combo = 1;
-                    }
+        mechanism.addEventListener('click', onMechanismClick);
+        mechanism.addEventListener('keydown', (ev)=>{ if(ev.key==='Enter' || ev.key===' '){ ev.preventDefault(); applyImpulse(); } });
+        clickBtn.addEventListener('click', onClickBtn);
+        autoBtn.addEventListener('click', onAutoToggle);
+        resetBtn.addEventListener('click', onReset);
 
-                    lastClickTime = now;
-
-                    // give slight random variation for playfulness
-                    const variance = 0.9 + Math.random() * 0.2;
-                    impulse = impulse * (1 + combo * 0.08) * variance;
-
-                    // update angular velocity (adds to existing)
-                    angularVelocity += impulse;
-
-                    // update score: reward impulse * combo
-                    const gained = Math.round(impulse * combo * 0.1);
-                    score += gained;
-                    spins += 1;
-
-                    // UI updates
-                    scoreEl.textContent = score;
-                    spinsEl.textContent = spins;
-                    comboEl.textContent = combo;
-                    momentumEl.textContent = Math.round(angularVelocity);
-
-                    // Visual cue: add spinning class briefly
-                    mechanism.classList.add('spin');
-                    setTimeout(() => mechanism.classList.remove('spin'), 700);
-
-                    log(`Clicked: +${gained} pts (impulse ${Math.round(impulse)}) — Combo ${combo}`);
-                }
-
-                // Animation loop to integrate physics and render
-                function tick(now) {
-                    const dt = Math.min(40, now - lastUpdate) / 1000; // seconds, cap to avoid big jumps
-                    lastUpdate = now;
-
-                    // integrate angular velocity -> angle
-                    if (Math.abs(angularVelocity) > MIN_VELOCITY) {
-                        angle = (angle + angularVelocity * dt) % 360;
-                        // apply friction (multiplicative)
-                        angularVelocity *= Math.pow(FRICTION, dt * 60); // scale friction to 60fps baseline
-                    } else {
-                        angularVelocity = 0;
-                    }
-
-                    // If spinning and angularVelocity flips sign or crosses thresholds we could detect "spin" completions:
-                    // Very simple: whenever the rotor completes 360 degrees, count as a spin
-                    // To detect completions robustly, we can track total rotations — but to keep simple we update spins on click only.
-
-                    // render transform
-                    rotor.setAttribute('transform', `translate(100 100) rotate(${angle})`);
-
-                    // update momentum display smoothly
-                    momentumEl.textContent = Math.round(angularVelocity);
-
-                    requestAnimationFrame(tick);
-                }
-
-                // Event handlers
-                function onMechanismClick(e) {
-                    applyImpulse();
-                }
-
-                function onClickBtn(e) {
-                    applyImpulse();
-                }
-
-                function onAutoToggle(e) {
-                    autoMode = !autoMode;
-                    autoBtn.textContent = `Auto: ${autoMode ? 'On' : 'Off'}`;
-                    if (autoMode) {
-                        autoInterval = setInterval(() => applyImpulse(), 800);
-                    } else {
-                        clearInterval(autoInterval);
-                        autoInterval = null;
-                    }
-                }
-
-                function onReset(e) {
-                    angle = 0;
-                    angularVelocity = 0;
-                    spins = 0;
-                    score = 0;
-                    combo = 0;
-                    lastClickTime = 0;
-                    scoreEl.textContent = score;
-                    spinsEl.textContent = spins;
-                    comboEl.textContent = combo;
-                    momentumEl.textContent = 0;
-                    log('Game reset.');
-                }
-
-                // Accessibility: allow keyboard space/enter to trigger mechanism when focused
-                mechanism.addEventListener('keydown', (ev) => {
-                    if (ev.key === 'Enter' || ev.key === ' ') {
-                        ev.preventDefault();
-                        applyImpulse();
-                    }
-                });
-
-                // Attach listeners
-                mechanism.addEventListener('click', onMechanismClick);
-                clickBtn.addEventListener('click', onClickBtn);
-                autoBtn.addEventListener('click', onAutoToggle);
-                resetBtn.addEventListener('click', onReset);
-
-                // start loop
-                lastUpdate = performance.now();
-                requestAnimationFrame(tick);
-
-                // initial log
-                log('Khaby Lame Mechanism minigame ready. Click the mechanism to start!');
-            })();
-        </script>
-	</body>
+        lastUpdate = performance.now();
+        requestAnimationFrame(tick);
+        log('Khaby Lame Mechanism minigame ready. Click the mechanism to start!');
+    })();
+    </script>
+</body>
 </html>
