@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Live Crypto Prices — BTC / ETH / SOL</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    body{font-family: "Open Sans", Arial, sans-serif; padding:24px; background:#fbfcfe; color:#111}
+    header{display:flex; align-items:center; gap:16px; margin-bottom:18px}
+    h1{margin:0; font-size:1.25rem}
+    .container{max-width:900px; margin:0 auto; background:#fff; padding:18px; border-radius:10px; box-shadow:0 6px 18px rgba(0,0,0,0.04)}
+    .grid{display:grid; grid-template-columns:1fr 320px; gap:18px; align-items:start}
+    .prices{display:flex; flex-direction:column; gap:12px}
+    .card{padding:12px; border-radius:8px; border:1px solid rgba(0,0,0,0.04); background:linear-gradient(180deg,#fff,#fbfdff)}
+    .row{display:flex; justify-content:space-between; align-items:center; gap:8px}
+    .symbol{font-weight:700}
+    .price{font-size:1.05rem}
+    .chg.pos{color:green}
+    .chg.neg{color:red}
+    .money-img{width:100%; border-radius:8px; object-fit:cover; display:block}
+    .controls{margin-top:12px; display:flex; gap:8px}
+    .btn{padding:8px 12px; border-radius:6px; border:0; cursor:pointer; background:#0a66c2; color:#fff}
+    small{color:#666}
+    @media(max-width:760px){ .grid{grid-template-columns:1fr; } .money-img{height:200px; object-fit:contain} }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Live Crypto Prices</h1>
+    <nav><a href="index.html">← Back to Portfolio</a></nav>
+  </header>
+
+  <main class="container" role="main">
+    <div class="grid">
+      <div>
+        <div class="prices" id="prices">
+          <div class="card">
+            <div class="row">
+              <div>
+                <div class="symbol">Bitcoin (BTC)</div>
+                <small id="btc-last">—</small>
+              </div>
+              <div style="text-align:right">
+                <div class="price" id="btc-price">—</div>
+                <div class="chg" id="btc-chg">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div>
+                <div class="symbol">Ethereum (ETH)</div>
+                <small id="eth-last">—</small>
+              </div>
+              <div style="text-align:right">
+                <div class="price" id="eth-price">—</div>
+                <div class="chg" id="eth-chg">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div>
+                <div class="symbol">Solana (SOL)</div>
+                <small id="sol-last">—</small>
+              </div>
+              <div style="text-align:right">
+                <div class="price" id="sol-price">—</div>
+                <div class="chg" id="sol-chg">—</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="row">
+              <div>
+                <small>Data source:</small>
+                <div><a href="https://www.coingecko.com" target="_blank" rel="noopener">CoinGecko (public API)</a></div>
+              </div>
+              <div style="text-align:right">
+                <small id="updated">Last updated: —</small>
+              </div>
+            </div>
+
+            <div class="controls">
+              <button class="btn" id="refresh">Refresh Now</button>
+              <button class="btn" id="autoToggle">Auto: On</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <aside>
+        <div class="card">
+          <img src="images/money.jpg" alt="Stack of money" class="money-img">
+          <p style="margin-top:10px">Here's the money photo included per your request.</p>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <script>
+    // Crypto page script: fetch BTC, ETH, SOL prices (USD) from CoinGecko
+    // Auto-refresh every REFRESH_INTERVAL_MS milliseconds
+    (function(){
+      const REFRESH_INTERVAL_MS = 30000; // 30s
+      const refreshBtn = document.getElementById('refresh');
+      const autoToggle = document.getElementById('autoToggle');
+      let auto = true;
+      let timer = null;
+
+      const ids = {
+        btc: 'bitcoin',
+        eth: 'ethereum',
+        sol: 'solana'
+      };
+
+      function setText(id, text) { const el = document.getElementById(id); if(el) el.textContent = text; }
+
+      function formatPrice(v) { return v === undefined ? '—' : '$' + Number(v).toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2}); }
+      function formatChange(v) { if(v===undefined) return '—'; const n = Number(v).toFixed(2); return (n>0?'+':'') + n + '%'; }
+
+      async function fetchPrices(){
+        try {
+          const url = `https://api.coingecko.com/api/v3/simple/price?ids=${ids.btc},${ids.eth},${ids.sol}&vs_currencies=usd&include_24hr_change=true`;
+          const res = await fetch(url);
+          if(!res.ok) throw new Error('API error ' + res.status);
+          const data = await res.json();
+
+          // BTC
+          const btc = data[ids.btc];
+          setText('btc-price', formatPrice(btc?.usd));
+          setText('btc-chg', formatChange(btc?.usd_24h_change));
+          document.getElementById('btc-chg').className = 'chg ' + (btc?.usd_24h_change >= 0 ? 'pos' : 'neg');
+          setText('btc-last', new Date().toLocaleTimeString());
+
+          // ETH
+          const eth = data[ids.eth];
+          setText('eth-price', formatPrice(eth?.usd));
+          setText('eth-chg', formatChange(eth?.usd_24h_change));
+          document.getElementById('eth-chg').className = 'chg ' + (eth?.usd_24h_change >= 0 ? 'pos' : 'neg');
+          setText('eth-last', new Date().toLocaleTimeString());
+
+          // SOL
+          const sol = data[ids.sol];
+          setText('sol-price', formatPrice(sol?.usd));
+          setText('sol-chg', formatChange(sol?.usd_24h_change));
+          document.getElementById('sol-chg').className = 'chg ' + (sol?.usd_24h_change >= 0 ? 'pos' : 'neg');
+          setText('sol-last', new Date().toLocaleTimeString());
+
+          setText('updated', 'Last updated: ' + new Date().toLocaleString());
+        } catch(err){
+          console.error('fetchPrices error', err);
+          setText('updated', 'Last updated: error');
+        }
+      }
+
+      refreshBtn.addEventListener('click', fetchPrices);
+      autoToggle.addEventListener('click', ()=>{
+        auto = !auto;
+        autoToggle.textContent = 'Auto: ' + (auto ? 'On' : 'Off');
+        if(auto){ timer = setInterval(fetchPrices, REFRESH_INTERVAL_MS); } else { clearInterval(timer); timer = null; }
+      });
+
+      // initial load and start timer
+      fetchPrices();
+      if(auto) timer = setInterval(fetchPrices, REFRESH_INTERVAL_MS);
+    })();
+  </script>
+</body>
+</html>
